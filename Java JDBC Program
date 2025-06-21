@@ -1,0 +1,47 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class JDBCInsertExample {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/task"; // Change DB name if different
+        String username = "root"; // Use your MySQL username
+        String password = "yourpassword"; // Use your MySQL password
+
+        // Employee data
+        int[] empcodes = {101, 102, 103, 104, 105};
+        String[] empnames = {"Jenny", "Jacky", "Joe", "John", "Shameer"};
+        int[] empages = {25, 30, 20, 40, 25};
+        double[] esalaries = {10000, 20000, 40000, 80000, 90000};
+
+        try {
+            // Load MySQL JDBC Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Connect to the database
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            // Prepare insert query
+            String query = "INSERT INTO user (empcode, empname, empage, esalary) VALUES (?, ?, ?, ?)";
+            PreparedStatement pst = con.prepareStatement(query);
+
+            // Loop through data and insert
+            for (int i = 0; i < empcodes.length; i++) {
+                pst.setInt(1, empcodes[i]);
+                pst.setString(2, empnames[i]);
+                pst.setInt(3, empages[i]);
+                pst.setDouble(4, esalaries[i]);
+                pst.executeUpdate();
+            }
+
+            System.out.println("Data inserted successfully!");
+
+            // Close connection
+            pst.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
